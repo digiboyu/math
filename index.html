@@ -15,7 +15,7 @@
     .game-box {
       background: #fff3e0;
       border: 4px dashed #ff9800;
-      padding: 25px 60px;
+      padding: 25px;
       border-radius: 25px;
       display: inline-block;
       max-width: 100%;
@@ -25,12 +25,13 @@
       font-size: 28px;
       margin-bottom: 20px;
     }
-    input {
+    input, select {
       font-size: 24px;
       padding: 10px;
-      width: 90px;
+      width: 100px;
       border-radius: 10px;
       border: 2px solid #ccc;
+      margin: 5px;
     }
     button {
       font-size: 22px;
@@ -52,6 +53,11 @@
       font-size: 22px;
       color: #ff5722;
     }
+    .timer {
+      margin-top: 10px;
+      font-size: 22px;
+      color: #009688;
+    }
     @media (max-width: 600px) {
       .game-box {
         width: 90%;
@@ -64,25 +70,61 @@
 </head>
 <body>
   <h1>🧠 Toplama Oyunu</h1>
+  <div>
+    <label for="difficulty">Zorluk Seviyesi: </label>
+    <select id="difficulty" onchange="generateQuestion()">
+      <option value="easy">Kolay</option>
+      <option value="medium">Orta</option>
+      <option value="hard">Zor</option>
+    </select>
+  </div>
   <div class="game-box">
     <div class="question" id="question">5 + 3 işlemi kaç eder?</div>
     <input type="number" id="answer" placeholder="Cevap"/>
     <br>
     <button onclick="checkAnswer()">Gönder</button>
     <div class="feedback" id="feedback"></div>
+    <div class="timer" id="timer">Süre: 10</div>
     <div class="score" id="score">Puan: 0</div>
   </div>
 
+  <audio id="correctSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+  <audio id="wrongSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
+
   <script>
-    let num1, num2, correctAnswer, score = 0;
+    let num1, num2, correctAnswer, score = 0, timeLeft = 10, timerInterval;
+
+    function getDifficultyRange() {
+      const level = document.getElementById("difficulty").value;
+      if (level === "easy") return [1, 10];
+      if (level === "medium") return [5, 20];
+      return [10, 50];
+    }
 
     function generateQuestion() {
-      num1 = Math.floor(Math.random() * 10) + 1;
-      num2 = Math.floor(Math.random() * 10) + 1;
+      clearInterval(timerInterval);
+      const [min, max] = getDifficultyRange();
+      num1 = Math.floor(Math.random() * (max - min + 1)) + min;
+      num2 = Math.floor(Math.random() * (max - min + 1)) + min;
       correctAnswer = num1 + num2;
-      document.getElementById("question").innerText = `${num1} + ${num2} = ?`;
+      document.getElementById("question").innerText = `${num1} + ${num2} işlemi kaç eder?`;
       document.getElementById("answer").value = "";
       document.getElementById("feedback").innerText = "";
+      document.getElementById("timer").innerText = `Süre: 20`;
+      timeLeft = 20;
+      timerInterval = setInterval(countdown, 1000);
+    }
+
+    function countdown() {
+      timeLeft--;
+      document.getElementById("timer").innerText = `Süre: ${timeLeft}`;
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById("feedback").innerText = "⏰ Süre doldu!";
+        document.getElementById("feedback").style.color = "orange";
+        document.getElementById("wrongSound").play();
+        setTimeout(generateQuestion, 1500);
+      }
     }
 
     function checkAnswer() {
@@ -91,12 +133,15 @@
         score++;
         document.getElementById("feedback").innerText = "🎉 Doğru cevap!";
         document.getElementById("feedback").style.color = "green";
+        document.getElementById("correctSound").play();
       } else {
         document.getElementById("feedback").innerText = "❌ Yanlış, tekrar dene!";
         document.getElementById("feedback").style.color = "red";
+        document.getElementById("wrongSound").play();
       }
       document.getElementById("score").innerText = `Puan: ${score}`;
-      setTimeout(generateQuestion, 1000);
+      clearInterval(timerInterval);
+      setTimeout(generateQuestion, 1500);
     }
 
     generateQuestion();
