@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Toplama Oyunu</title>
+  <style>
+    body {
+      font-family: "Comic Sans MS", cursive, sans-serif;
+      background: #e0f7fa;
+      text-align: center;
+      padding: 40px 20px;
+      margin: 0;
+    }
+    .game-box {
+      background: #fff3e0;
+      border: 4px dashed #ff9800;
+      padding: 25px;
+      border-radius: 25px;
+      display: inline-block;
+      max-width: 100%;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+    .question {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    input {
+      font-size: 24px;
+      padding: 10px;
+      width: 80px;
+      border-radius: 10px;
+      border: 2px solid #ccc;
+    }
+    button {
+      font-size: 22px;
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .feedback {
+      margin-top: 20px;
+      font-size: 24px;
+      height: 40px;
+    }
+    .score {
+      margin-top: 20px;
+      font-size: 22px;
+      color: #ff5722;
+    }
+    @media (max-width: 600px) {
+      .game-box {
+        width: 90%;
+      }
+      input {
+        width: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 Toplama Oyunu</h1>
+  <div class="game-box">
+    <div class="question" id="question">5 + 3 işlemi kaç eder?</div>
+    <input type="number" id="answer" placeholder="Cevap"/>
+    <br>
+    <button onclick="checkAnswer()">Gönder</button>
+    <div class="feedback" id="feedback"></div>
+    <div class="score" id="score">Puan: 0</div>
+  </div>
+
+  <script>
+    let num1, num2, correctAnswer, score = 0;
+
+    function generateQuestion() {
+      num1 = Math.floor(Math.random() * 10) + 1;
+      num2 = Math.floor(Math.random() * 10) + 1;
+      correctAnswer = num1 + num2;
+      document.getElementById("question").innerText = `${num1} + ${num2} işlemi kaç eder?`;
+      document.getElementById("answer").value = "";
+      document.getElementById("feedback").innerText = "";
+    }
+
+    function checkAnswer() {
+      const userAnswer = parseInt(document.getElementById("answer").value);
+      if (userAnswer === correctAnswer) {
+        score++;
+        document.getElementById("feedback").innerText = "🎉 Doğru cevap!";
+        document.getElementById("feedback").style.color = "green";
+      } else {
+        document.getElementById("feedback").innerText = "❌ Yanlış, tekrar dene!";
+        document.getElementById("feedback").style.color = "red";
+      }
+      document.getElementById("score").innerText = `Puan: ${score}`;
+      setTimeout(generateQuestion, 1000);
+    }
+
+    generateQuestion();
+  </script>
+</body>
+</html>
