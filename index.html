@@ -6,7 +6,7 @@
   <title>Toplama Oyunu</title>
   <style>
     body {
-      font-family: "Comic Sans MS", verdana, sans-serif;
+      font-family: "Comic Sans MS", sans-serif;
       background: #e0f7fa;
       text-align: center;
       padding: 40px 20px;
@@ -80,7 +80,7 @@
       num1 = Math.floor(Math.random() * 10) + 1;
       num2 = Math.floor(Math.random() * 10) + 1;
       correctAnswer = num1 + num2;
-      document.getElementById("question").innerText = `${num1} + ${num2} işlemi kaç eder?`;
+      document.getElementById("question").innerText = `${num1} + ${num2} = ?`;
       document.getElementById("answer").value = "";
       document.getElementById("feedback").innerText = "";
     }
